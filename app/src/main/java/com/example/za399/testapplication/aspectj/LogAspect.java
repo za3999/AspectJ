@@ -30,19 +30,19 @@ public class LogAspect {
     }
 
     @Before("method()")
-    public void beforePoint(ProceedingJoinPoint joinPoint) {
+    public void beforePoint(JoinPoint joinPoint) {
         if (joinPoint != null) {
             MethodSignature methodSignature = (MethodSignature) joinPoint.getSignature();
             String className = methodSignature.getDeclaringType().getSimpleName();
             String methodName = methodSignature.getName();
             Log.d("caifu", "befortPoint className:" + className + ",methodName:" + methodName);
         } else {
-            Log.d("caifu", "afterPoint joinPoint is null");
+            Log.d("caifu", "befortPoint joinPoint is null");
         }
     }
 
     @After("method()")
-    public void afterPoint(ProceedingJoinPoint joinPoint) {
+    public void afterPoint(JoinPoint joinPoint) {
         if (joinPoint != null) {
             MethodSignature methodSignature = (MethodSignature) joinPoint.getSignature();
             String className = methodSignature.getDeclaringType().getSimpleName();
@@ -54,7 +54,7 @@ public class LogAspect {
     }
 
     @AfterReturning("method()")
-    public void afterReturning(JoinPoint joinPoint, Object result) {
+    public void afterReturning(JoinPoint joinPoint) {
         if (joinPoint != null) {
             MethodSignature methodSignature = (MethodSignature) joinPoint.getSignature();
             String className = methodSignature.getDeclaringType().getSimpleName();
