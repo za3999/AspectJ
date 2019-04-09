@@ -12,6 +12,8 @@ import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
 
+import java.util.stream.Stream;
+
 @Aspect
 public class LogAspect {
 
@@ -21,11 +23,20 @@ public class LogAspect {
 
     @Around("method()")
     public Object aroundPoint(ProceedingJoinPoint joinPoint) throws Throwable {
-        MethodSignature methodSignature = (MethodSignature) joinPoint.getSignature();
-        String className = methodSignature.getDeclaringType().getSimpleName();
-        String methodName = methodSignature.getName();
-        Log.d("caifu", "aroundPoint className:" + className + ",methodName:" + methodName);
-        Object result = joinPoint.proceed();
+        Object result = null;
+        if (joinPoint != null) {
+            MethodSignature methodSignature = (MethodSignature) joinPoint.getSignature();
+            String className = methodSignature.getDeclaringType().getSimpleName();
+            String methodName = methodSignature.getName();
+            Log.d("caifu", "aroundPoint className:" + className + ",methodName:" + methodName);
+            Object[] args = joinPoint.getArgs();
+            Object[] newArgs = new Object[args.length];
+            for (int i = 0; i < args.length; i++) {
+                newArgs[i] = "intercept:" + args[i];
+            }
+//           Object[] newArgs = Stream.of(args).map(o -> "intercept:" + o).toArray();
+            result = joinPoint.proceed(newArgs);
+        }
         return result;
     }
 
@@ -36,8 +47,6 @@ public class LogAspect {
             String className = methodSignature.getDeclaringType().getSimpleName();
             String methodName = methodSignature.getName();
             Log.d("caifu", "befortPoint className:" + className + ",methodName:" + methodName);
-        } else {
-            Log.d("caifu", "befortPoint joinPoint is null");
         }
     }
 
@@ -48,8 +57,6 @@ public class LogAspect {
             String className = methodSignature.getDeclaringType().getSimpleName();
             String methodName = methodSignature.getName();
             Log.d("caifu", "afterPoint className:" + className + ",methodName:" + methodName);
-        } else {
-            Log.d("caifu", "afterPoint joinPoint is null");
         }
     }
 
@@ -60,8 +67,6 @@ public class LogAspect {
             String className = methodSignature.getDeclaringType().getSimpleName();
             String methodName = methodSignature.getName();
             Log.d("caifu", "afterReturning className:" + className + ",methodName:" + methodName);
-        } else {
-            Log.d("caifu", "afterReturning joinPoint is null");
         }
     }
 }
